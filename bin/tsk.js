@@ -7,6 +7,8 @@
  * tells people to type. Those two have to stay in step: a command the console
  * advertises and the binary does not answer to is worse than no CLI at all.
  */
+import { readFileSync } from 'node:fs';
+
 import { parseArgs, leadingIntent } from '../src/args.js';
 import { ApiError } from '../src/api.js';
 import { bold, cyan, dim, out, fail } from '../src/ui.js';
@@ -19,7 +21,14 @@ import { ps, psScale } from '../src/commands/ps.js';
 import { releases, releasesRollback } from '../src/commands/releases.js';
 import { whoami } from '../src/commands/whoami.js';
 
-const VERSION = '0.1.0';
+// Read, not restated. The Homebrew formula asserts that `tsk version` matches
+// the tag it packaged, so a hardcoded copy here is a release that fails its own
+// smoke test the first time somebody bumps one and forgets the other.
+// package.json ships in both the npm `files` list and the GitHub tarball, so it
+// is present however tsk was installed.
+const VERSION = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+).version;
 
 const COMMANDS = {
   login, logout, apps, deploy, logs, whoami,

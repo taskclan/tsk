@@ -1,6 +1,6 @@
 {
   "name": "@taskclan/tsk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Taskclan Cloud CLI \u2014 deploy, scale, tail logs and roll back from the terminal.",
   "bin": {
     "tsk": "bin/tsk.js"
