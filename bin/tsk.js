@@ -7,7 +7,7 @@
  * tells people to type. Those two have to stay in step: a command the console
  * advertises and the binary does not answer to is worse than no CLI at all.
  */
-import { parseArgs } from '../src/args.js';
+import { parseArgs, leadingIntent } from '../src/args.js';
 import { ApiError } from '../src/api.js';
 import { bold, cyan, dim, out, fail } from '../src/ui.js';
 import { login } from '../src/commands/login.js';
@@ -54,8 +54,10 @@ async function main() {
   const name = argv[0];
   const args = parseArgs(argv.slice(1));
 
-  if (!name || name === 'help' || args.help) { out(HELP); return; }
-  if (name === 'version' || name === '--version' || args.version) { out(VERSION); return; }
+  // A leading flag is a request, not a command name. See leadingIntent.
+  const intent = leadingIntent(name);
+  if (intent === 'help' || args.help) { out(HELP); return; }
+  if (intent === 'version' || args.version) { out(VERSION); return; }
 
   const run = COMMANDS[name];
   if (!run) {
