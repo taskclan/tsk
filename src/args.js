@@ -34,3 +34,22 @@ export function parseArgs(argv, aliases = { a: 'app', h: 'help', v: 'version' })
   }
   return out;
 }
+
+/**
+ * What a leading token means, when it is a flag rather than a command.
+ *
+ * `parseArgs` already understands `-h` and `-v`, but only for tokens after the
+ * command: the CLI takes `argv[0]` as the command name and parses the rest. So
+ * `tsk deploy --help` worked and `tsk --help` answered `no command "--help"`,
+ * which is the form people actually type first. `--version` happened to work
+ * only because it was special-cased by name, and `-v` and `-h` were not — three
+ * spellings of the same two intentions, two of them wrong.
+ *
+ * Returns 'help', 'version', or null when the token is a real command.
+ */
+export function leadingIntent(name) {
+  if (!name) return 'help';
+  if (name === 'help' || name === '--help' || name === '-h') return 'help';
+  if (name === 'version' || name === '--version' || name === '-v' || name === '-V') return 'version';
+  return null;
+}
