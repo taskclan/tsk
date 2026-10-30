@@ -35,7 +35,8 @@ Feel: **Heroku + Vercel**. Short verbs, `--app` or a linked directory, CI via en
 | `tsk deploy [--app] [--ref] [--stage] [--plan] [--detach]` | Polls until ready; exit 0. | Build failed → exit 1. |
 | `tsk logs [--tail] [--app]` | Streams logs. | App missing. |
 | `tsk ps` / `tsk ps:scale` | Formation shown / updated. | Role / app. |
-| `tsk releases` / `tsk releases:rollback` | History / previous live. | Nothing to roll. |
+| `tsk releases` | History; marks ● live; shows source. | Unauthorized. |
+| `tsk rollback [id\|commit]` / `releases:rollback` | Instant no-rebuild roll back to previous (or matching) ready release. | Nothing earlier / already live. |
 | `tsk env` / `tsk env:set` / `tsk env:unset` | List (secrets masked) / set / remove. | Role cannot write. |
 | `tsk db` / `tsk db:create` / `tsk db:attach` / `tsk db:detach` | List without URLs by default; provision Neon/Supabase/Redis. | Provider not configured. |
 | `tsk git:connect owner/repo` | Repo linked; deploy on push to that branch. | No GitHub App install. |

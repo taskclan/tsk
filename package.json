@@ -1,6 +1,6 @@
 {
   "name": "@taskclan/tsk",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Taskclan Cloud CLI \u2014 deploy, env, databases, and git connect from the terminal.",
   "bin": {
     "tsk": "bin/tsk.js"

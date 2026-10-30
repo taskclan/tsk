@@ -19,7 +19,7 @@ import { appsCreate } from '../src/commands/create.js';
 import { deploy } from '../src/commands/deploy.js';
 import { logs } from '../src/commands/logs.js';
 import { ps, psScale } from '../src/commands/ps.js';
-import { releases, releasesRollback } from '../src/commands/releases.js';
+import { releases, releasesRollback, rollback } from '../src/commands/releases.js';
 import { whoami } from '../src/commands/whoami.js';
 import { link, unlink } from '../src/commands/link.js';
 import { showConfig } from '../src/commands/showConfig.js';
@@ -37,7 +37,7 @@ const COMMANDS = {
   login, logout, apps, deploy, logs, whoami, link, unlink, config: showConfig,
   'apps:create': appsCreate,
   ps, 'ps:scale': psScale,
-  releases, 'releases:rollback': releasesRollback,
+  releases, rollback, 'releases:rollback': releasesRollback,
   env, 'env:set': envSet, 'env:unset': envUnset,
   db, 'db:create': dbCreate, 'db:attach': dbAttach, 'db:detach': dbDetach,
   'git:connect': gitConnect, 'git:remote': gitRemote, 'git:disconnect': gitDisconnect,
@@ -60,7 +60,8 @@ const HELP = `
   ${bold('Running things')}
     tsk logs --tail [--filter X]      stream logs (reconnects on roll)
     tsk ps / ps:scale                 formation
-    tsk releases / releases:rollback  history / roll back
+    tsk releases                      deployment history (● live)
+    tsk rollback [id|commit]          previous ready release, no rebuild
     tsk open / open:console           live URL or Cloud console
 
   ${bold('Config & data')}
