@@ -6,6 +6,7 @@
  * has to track which workspace it is talking to.
  */
 import { apiBase, loadKey } from './config.js';
+import { readProject } from './project.js';
 
 export class ApiError extends Error {
   constructor(message, status) { super(message); this.status = status; }
@@ -79,6 +80,36 @@ export function pickApp(list, name) {
   );
 }
 
-export async function resolveApp(name) {
-  return pickApp(await listApps(), name);
+/**
+ * Resolve --app, else the linked project, else the sole workspace app.
+ * `--stage` picks the pipeline sibling when the linked/named app is in a pipeline.
+ */
+export async function resolveApp(name, { stage } = {}) {
+  const list = await listApps();
+  let target = name;
+  if (!target) {
+    const linked = readProject();
+    target = linked?.app || linked?.appId || null;
+  }
+  let app = pickApp(list, target);
+  if (stage) {
+    const want = String(stage).trim().toLowerCase();
+    if (!app.pipeline) {
+      throw new ApiError(
+        `"${app.name}" is not in a pipeline — create a sibling with \`tsk apps:create … --pipeline NAME --stage ${want}\`, or pass --app`,
+        400,
+      );
+    }
+    const sibling = list.find((s) => s.pipeline === app.pipeline && String(s.stage || '').toLowerCase() === want);
+    if (!sibling) {
+      throw new ApiError(
+        `no app in pipeline "${app.pipeline}" at stage "${want}" — this pipeline has ${
+          list.filter((s) => s.pipeline === app.pipeline).map((s) => `${s.name}(${s.stage || '?'})`).join(', ') || 'nothing'
+        }`,
+        404,
+      );
+    }
+    app = sibling;
+  }
+  return app;
 }

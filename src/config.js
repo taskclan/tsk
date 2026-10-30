@@ -56,7 +56,29 @@ export function saveKey(key) {
   return 'file';
 }
 
+/**
+ * Where the active key came from. CI must be able to inject a token without
+ * touching the keychain — env wins so Actions never depend on a laptop login.
+ */
+export function keySource() {
+  if (process.env.TASKCLAN_API_KEY?.trim() || process.env.TASKCLAN_CLOUD_API_KEY?.trim()) return 'env';
+  const cfg = readConfig();
+  if (cfg.keyStore === 'keychain') return 'keychain';
+  if (cfg.accountKey) return 'file';
+  if (canKeychain()) {
+    try {
+      execFileSync('security', ['find-generic-password', '-s', SERVICE, '-a', ACCOUNT, '-w'], {
+        encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+      });
+      return 'keychain';
+    } catch { /* not there */ }
+  }
+  return 'none';
+}
+
 export function loadKey() {
+  const fromEnv = process.env.TASKCLAN_API_KEY?.trim() || process.env.TASKCLAN_CLOUD_API_KEY?.trim();
+  if (fromEnv) return fromEnv;
   const cfg = readConfig();
   if (cfg.keyStore === 'keychain' || (canKeychain() && !cfg.accountKey)) {
     try {
