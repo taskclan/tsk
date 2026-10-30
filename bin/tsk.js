@@ -26,6 +26,8 @@ import { showConfig } from '../src/commands/showConfig.js';
 import { env, envSet, envUnset } from '../src/commands/env.js';
 import { db, dbCreate, dbAttach, dbDetach } from '../src/commands/db.js';
 import { gitConnect, gitRemote, gitDisconnect } from '../src/commands/git.js';
+import { domains, domainsAdd, domainsRemove, domainsVerify } from '../src/commands/domains.js';
+import { openApp, openConsole } from '../src/commands/open.js';
 
 const VERSION = JSON.parse(
   readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
@@ -39,6 +41,8 @@ const COMMANDS = {
   env, 'env:set': envSet, 'env:unset': envUnset,
   db, 'db:create': dbCreate, 'db:attach': dbAttach, 'db:detach': dbDetach,
   'git:connect': gitConnect, 'git:remote': gitRemote, 'git:disconnect': gitDisconnect,
+  domains, 'domains:add': domainsAdd, 'domains:remove': domainsRemove, 'domains:verify': domainsVerify,
+  open: openApp, 'open:console': openConsole,
 };
 
 const HELP = `
@@ -50,18 +54,19 @@ const HELP = `
     tsk apps:create NAME              provision a new app
     tsk link --app NAME               associate this directory with an app
     tsk git:connect owner/repo        wire GitHub → auto-deploy on push
+    tsk git:remote --add              install git remote → git push cloud main
     tsk deploy [--ref BRANCH]         build and release
 
   ${bold('Running things')}
-    tsk logs --tail --app NAME        stream logs from every container
-    tsk ps --app NAME                 what the formation looks like
-    tsk ps:scale web=3 --app NAME     change the formation without a rebuild
-    tsk releases --app NAME           deployment history
-    tsk releases:rollback --app N     back to the previous release
+    tsk logs --tail [--filter X]      stream logs (reconnects on roll)
+    tsk ps / ps:scale                 formation
+    tsk releases / releases:rollback  history / roll back
+    tsk open / open:console           live URL or Cloud console
 
   ${bold('Config & data')}
     tsk env / env:set / env:unset     environment variables (secrets masked)
     tsk db / db:create                Neon, Supabase, or Redis
+    tsk domains / domains:add         custom hostnames + DNS checklist
     tsk config                        resolved settings (no secrets)
 
   ${bold('Account')}
@@ -70,7 +75,6 @@ const HELP = `
 
   ${dim('CI')} set ${bold('TASKCLAN_API_KEY')} — no keychain required.
   ${dim('Docs')} ${cyan('https://cloud.taskclan.com/cloud/cli-setup')}
-  ${dim('Surface')} docs/COMMAND_SURFACE.md
 `;
 
 async function main() {
