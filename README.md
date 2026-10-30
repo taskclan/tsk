@@ -28,7 +28,8 @@ tsk deploy
 | `tsk domains` / `domains:add` | Custom hostnames + DNS records still needed. |
 | `tsk open` / `open:console` | Live URL or Cloud console in the browser. |
 | `tsk ps` / `ps:scale` | Formation. |
-| `tsk releases` / `releases:rollback` | History / roll back. |
+| `tsk releases` | Deployment history; marks ● live. |
+| `tsk rollback [id\|commit]` | Instant roll back to the previous (or named) ready release. |
 | `tsk config` | Resolved api base, linked app, key source. |
 | `tsk whoami` / `tsk logout` | Account. |
 
@@ -50,6 +51,15 @@ Pipeline siblings:
 ```
 tsk apps:create my-app-staging --pipeline my-app --stage staging --link
 tsk deploy --ref feature/foo --stage staging
+```
+
+### Rollback
+
+```
+tsk releases                 # ● live marks the serving build
+tsk rollback                 # previous ready release (no rebuild)
+tsk rollback a1b2c3d4        # by deployment id prefix
+tsk rollback deadbeef        # by commit sha prefix
 ```
 
 ## Credentials
