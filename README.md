@@ -18,6 +18,8 @@ tsk deploy
 | `tsk login` | Authorise this machine in a browser. Key → keychain, never stdout. |
 | `tsk apps` | Apps this key can reach. |
 | `tsk apps:create NAME` | Provision a service app (`--pipeline`, `--stage`, `--link`). |
+| `tsk apps:info [--app]` | Id, url, git remote, pipeline/stage, plan, last deploy. |
+| `tsk apps:destroy NAME --confirm NAME` | Delete the app and free its resources (exact name confirm). |
 | `tsk link --app NAME` | Write `.taskclan/config.json` (safe to commit). |
 | `tsk deploy [--ref BRANCH] [--stage staging]` | Build the connected repo (any git ref). |
 | `tsk git:connect owner/repo` | Wire GitHub; pushes to that branch deploy. |

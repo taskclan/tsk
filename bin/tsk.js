@@ -14,7 +14,7 @@ import { ApiError } from '../src/api.js';
 import { bold, cyan, dim, out, fail } from '../src/ui.js';
 import { login } from '../src/commands/login.js';
 import { logout } from '../src/commands/logout.js';
-import { apps } from '../src/commands/apps.js';
+import { apps, appsInfo, appsDestroy } from '../src/commands/apps.js';
 import { appsCreate } from '../src/commands/create.js';
 import { deploy } from '../src/commands/deploy.js';
 import { logs } from '../src/commands/logs.js';
@@ -35,7 +35,7 @@ const VERSION = JSON.parse(
 
 const COMMANDS = {
   login, logout, apps, deploy, logs, whoami, link, unlink, config: showConfig,
-  'apps:create': appsCreate,
+  'apps:create': appsCreate, 'apps:info': appsInfo, 'apps:destroy': appsDestroy,
   ps, 'ps:scale': psScale,
   releases, rollback, 'releases:rollback': releasesRollback,
   env, 'env:set': envSet, 'env:unset': envUnset,
@@ -52,6 +52,8 @@ const HELP = `
     tsk login                         authorise this machine in a browser
     tsk apps                          the apps this key can reach
     tsk apps:create NAME              provision a new app
+    tsk apps:info [--app]             id, url, git remote, plan, last deploy
+    tsk apps:destroy NAME --confirm NAME   delete app + free resources
     tsk link --app NAME               associate this directory with an app
     tsk git:connect owner/repo        wire GitHub → auto-deploy on push
     tsk git:remote --add              install git remote → git push cloud main

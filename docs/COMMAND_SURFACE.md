@@ -30,6 +30,8 @@ Feel: **Heroku + Vercel**. Short verbs, `--app` or a linked directory, CI via en
 | `tsk whoami` | Workspace + actor. | Not signed in. |
 | `tsk apps` | Table of apps. | Unauthorized. |
 | `tsk apps:create NAME` | App created; next steps. | Name taken / invalid. |
+| `tsk apps:info [--app]` | id, url, git remote, pipeline/stage, last deploy, plan. | App missing. |
+| `tsk apps:destroy NAME --confirm NAME` | Deletes the site; clears local link if it pointed here. | Confirm mismatch / not owner. Never from `--yes` alone. |
 | `tsk link [--app NAME]` | Writes `.taskclan/config.json`. | App missing. |
 | `tsk unlink` | Removes local link. | — |
 | `tsk deploy [--app] [--ref] [--stage] [--plan] [--detach]` | Polls until ready; exit 0. | Build failed → exit 1. |
