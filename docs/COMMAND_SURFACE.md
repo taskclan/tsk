@@ -39,25 +39,22 @@ Feel: **Heroku + Vercel**. Short verbs, `--app` or a linked directory, CI via en
 | `tsk env` / `tsk env:set` / `tsk env:unset` | List (secrets masked) / set / remove. | Role cannot write. |
 | `tsk db` / `tsk db:create` / `tsk db:attach` / `tsk db:detach` | List without URLs by default; provision Neon/Supabase/Redis. | Provider not configured. |
 | `tsk git:connect owner/repo` | Repo linked; deploy on push to that branch. | No GitHub App install. |
-| `tsk git:remote` | Prints how deploys happen (GitHub push today). | Unlinked. |
-| `tsk domains` / `tsk domains:add` / `tsk domains:remove` | Wave 2. | — |
-| `tsk open` / `tsk open:console` | Wave 2. | — |
+| `tsk git:remote [--add] [--rotate]` | Prints `https://cloud.taskclan.com/git/<sub>.git`; `--add` mints a deploy token and runs `git remote add cloud`. | No subdomain / role. |
+| `tsk domains` / `domains:add` / `domains:remove` / `domains:verify` | List + DNS checklist; attach; detach; re-check. | Role / invalid host. |
+| `tsk open` / `tsk open:console` | Opens live URL / console in the browser. | No live URL yet. |
 
 `--app` is optional when exactly one app exists in the workspace **or** the cwd is linked.
 
 ## Deploying branches and stages
 
-Until native `git push cloud` exists (TAS-2219):
+Three supported paths (pick one):
 
-1. Connect the GitHub repo once: `tsk git:connect owner/repo --branch main`.
-2. Deploy any ref: `tsk deploy --ref feature/foo`.
-3. Target a pipeline sibling: `tsk deploy --stage staging` (resolves the app in the same pipeline with that stage), or `--app myapp-staging`.
-
-Pushing to the connected GitHub branch still triggers Cloud's git-push webhook — that is the Heroku-like loop for teams already on GitHub.
+1. **Cloud git remote (Heroku-style):** `tsk git:remote --add` then `git push cloud main` (or `git push cloud feature:main`).
+2. **GitHub App:** `tsk git:connect owner/repo` — pushes to that GitHub branch deploy via webhook.
+3. **Explicit ref:** `tsk deploy --ref feature/foo` / `--stage staging` for pipeline siblings.
 
 ## Explicit non-goals (v1)
 
 - Uploading a local working tree as the release source (irreproducible).
 - Driving Intelligence / Studio / T1.
 - Printing secret env values without `--reveal` (and a role that may).
-- Native git-receive without a spike that GitHub-connect is not enough.

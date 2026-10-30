@@ -21,9 +21,12 @@ tsk deploy
 | `tsk link --app NAME` | Write `.taskclan/config.json` (safe to commit). |
 | `tsk deploy [--ref BRANCH] [--stage staging]` | Build the connected repo (any git ref). |
 | `tsk git:connect owner/repo` | Wire GitHub; pushes to that branch deploy. |
+| `tsk git:remote --add` | Install `git remote cloud` → `git push cloud main`. |
 | `tsk env` / `env:set` / `env:unset` | Config vars (secrets masked). |
 | `tsk db` / `db:create` | List or provision Neon / Supabase / Redis. |
-| `tsk logs --tail` | Stream container logs. |
+| `tsk logs --tail [--filter X]` | Stream logs; reconnects across container rolls. |
+| `tsk domains` / `domains:add` | Custom hostnames + DNS records still needed. |
+| `tsk open` / `open:console` | Live URL or Cloud console in the browser. |
 | `tsk ps` / `ps:scale` | Formation. |
 | `tsk releases` / `releases:rollback` | History / roll back. |
 | `tsk config` | Resolved api base, linked app, key source. |
@@ -31,14 +34,23 @@ tsk deploy
 
 `--app` can be omitted when the directory is linked or the workspace has exactly one app.
 
-### Staging vs production
+### Deploy paths
+
+```
+tsk git:remote --add              # Heroku-style: mints token, adds remote "cloud"
+git push cloud main
+git push cloud feature:main       # push a branch as the app's main
+
+tsk git:connect owner/repo        # or: GitHub App webhook on that branch
+tsk deploy --ref feature/foo --stage staging
+```
+
+Pipeline siblings:
 
 ```
 tsk apps:create my-app-staging --pipeline my-app --stage staging --link
 tsk deploy --ref feature/foo --stage staging
 ```
-
-Or pass `--app` explicitly. Native `git push cloud` is planned (TAS-2219); until then GitHub push + `tsk deploy --ref` is the path.
 
 ## Credentials
 
